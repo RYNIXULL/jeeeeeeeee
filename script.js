@@ -450,7 +450,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Drag and Drop + Click logic
     let isDragging = false;
-    let startX, startY, initialRight, initialBottom;
+    let startX, startY, initialLeft, initialTop;
     
     botAvatar.addEventListener('pointerdown', (e) => {
       e.preventDefault();
@@ -459,8 +459,8 @@ document.addEventListener('DOMContentLoaded', () => {
       startY = e.clientY;
       
       const rect = botWidget.getBoundingClientRect();
-      initialRight = window.innerWidth - rect.right;
-      initialBottom = window.innerHeight - rect.bottom;
+      initialLeft = rect.left;
+      initialTop = rect.top;
 
       botAvatar.style.cursor = 'grabbing';
       document.addEventListener('pointermove', onPointerMove);
@@ -476,9 +476,11 @@ document.addEventListener('DOMContentLoaded', () => {
       }
       
       if (isDragging) {
-        // We move by adjusting bottom and right since they are fixed to bottom/right
-        botWidget.style.right = `${initialRight - dx}px`;
-        botWidget.style.bottom = `${initialBottom - dy}px`;
+        botWidget.style.left = `${initialLeft + dx}px`;
+        botWidget.style.top = `${initialTop + dy}px`;
+        // Remove right/bottom if they were set
+        botWidget.style.right = 'auto';
+        botWidget.style.bottom = 'auto';
       }
     }
 

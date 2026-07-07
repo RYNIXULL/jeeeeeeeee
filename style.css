@@ -859,12 +859,12 @@ html, body {
    ============================================================ */
 .bot-widget-container {
   position: fixed;
-  bottom: 2rem;
-  right: 2rem;
+  top: 2rem;
+  left: 2rem;
   z-index: 9999;
   display: flex;
   flex-direction: column;
-  align-items: flex-end;
+  align-items: flex-start;
   gap: 12px;
   pointer-events: none; /* Let clicks pass through empty space */
 }
@@ -873,15 +873,15 @@ html, body {
   pointer-events: auto;
   opacity: 0;
   transform: translateY(10px) scale(0.9);
-  transform-origin: bottom right;
+  transform-origin: top left;
   transition: opacity 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), 
               transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   font-size: 0.9rem;
   padding: 12px 20px;
   max-width: 200px;
-  text-align: right;
+  text-align: left;
   /* Use liquid glass design inherited from .glass-btn */
-  border-radius: 20px 20px 4px 20px; /* Chat bubble tail effect */
+  border-radius: 4px 20px 20px 20px; /* Chat bubble tail effect */
 }
 
 .bot-widget-container.active .bot-chat-bubble,
@@ -957,8 +957,8 @@ html, body {
 
 @media (max-width: 768px) {
   .bot-widget-container {
-    bottom: 1.5rem;
-    right: 1.5rem;
+    top: 1.5rem;
+    left: 1.5rem;
   }
   .bot-avatar-wrapper {
     width: 55px;
