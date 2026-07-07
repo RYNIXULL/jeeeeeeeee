@@ -892,20 +892,17 @@ html, body {
 
 .bot-avatar-wrapper {
   pointer-events: auto;
-  width: 70px;
-  height: 70px;
+  width: 60px;
+  height: 60px;
   border-radius: 50%;
+  padding: 0; /* Override glass-btn padding */
+  display: flex;
+  align-items: center;
+  justify-content: center;
   position: relative;
   overflow: hidden;
   cursor: pointer;
   animation: floatMascot 4s ease-in-out infinite;
-  
-  /* Liquid glass orb effect */
-  box-shadow: 
-    0 10px 25px rgba(0,0,0,0.5),
-    inset 0 0 0 1px rgba(255,255,255,0.2),
-    inset 2px 2px 8px rgba(255,255,255,0.4),
-    inset -2px -2px 8px rgba(0,0,0,0.5);
   transition: transform 0.3s ease;
 }
 
@@ -917,12 +914,15 @@ html, body {
   transform: scale(0.95);
 }
 
-.bot-avatar-img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transform: scale(1.1); /* Zoom slightly */
+.bot-icon {
+  width: 28px;
+  height: 28px;
+  opacity: 0.8;
   transition: transform 0.4s ease;
+}
+
+.bot-avatar-wrapper:hover .bot-icon {
+  transform: scale(1.1) rotate(5deg);
 }
 
 @keyframes floatMascot {
@@ -936,8 +936,12 @@ html, body {
     right: 1.5rem;
   }
   .bot-avatar-wrapper {
-    width: 60px;
-    height: 60px;
+    width: 55px;
+    height: 55px;
+  }
+  .bot-icon {
+    width: 24px;
+    height: 24px;
   }
 }
 
