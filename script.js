@@ -429,25 +429,75 @@ document.addEventListener('DOMContentLoaded', () => {
       }, 4000);
     }, 1500);
 
-    botAvatar.addEventListener('pointerdown', (e) => {
-      e.preventDefault(); // Prevent double triggering on mobile
+    // Eye tracking logic
+    const robotEyes = document.getElementById('robot-eyes');
+    window.addEventListener('mousemove', (e) => {
+      if (!robotEyes) return;
+      const rect = botAvatar.getBoundingClientRect();
+      const centerX = rect.left + rect.width / 2;
+      const centerY = rect.top + rect.height / 2;
       
-      // Play UI click sound
-      playClickSound();
-
-      // Cycle message
-      msgIndex = (msgIndex + 1) % botMessages.length;
-      botMessage.textContent = botMessages[msgIndex];
-
-      // Show bubble and then hide it again after a few seconds
-      botWidget.classList.add('active');
+      const deltaX = e.clientX - centerX;
+      const deltaY = e.clientY - centerY;
+      const angle = Math.atan2(deltaY, deltaX);
+      const distance = Math.min(Math.hypot(deltaX, deltaY) / 10, 4); // Max 4px movement
       
-      // Clear previous timeout if any
-      if (botWidget.hideTimeout) clearTimeout(botWidget.hideTimeout);
+      const moveX = Math.cos(angle) * distance;
+      const moveY = Math.sin(angle) * distance;
       
-      botWidget.hideTimeout = setTimeout(() => {
-        botWidget.classList.remove('active');
-      }, 4000);
+      robotEyes.style.transform = `translate(${moveX}px, ${moveY}px)`;
     });
+
+    // Drag and Drop + Click logic
+    let isDragging = false;
+    let startX, startY, initialRight, initialBottom;
+    
+    botAvatar.addEventListener('pointerdown', (e) => {
+      e.preventDefault();
+      isDragging = false;
+      startX = e.clientX;
+      startY = e.clientY;
+      
+      const rect = botWidget.getBoundingClientRect();
+      initialRight = window.innerWidth - rect.right;
+      initialBottom = window.innerHeight - rect.bottom;
+
+      botAvatar.style.cursor = 'grabbing';
+      document.addEventListener('pointermove', onPointerMove);
+      document.addEventListener('pointerup', onPointerUp);
+    });
+
+    function onPointerMove(e) {
+      const dx = e.clientX - startX;
+      const dy = e.clientY - startY;
+      
+      if (Math.hypot(dx, dy) > 5) {
+        isDragging = true;
+      }
+      
+      if (isDragging) {
+        // We move by adjusting bottom and right since they are fixed to bottom/right
+        botWidget.style.right = `${initialRight - dx}px`;
+        botWidget.style.bottom = `${initialBottom - dy}px`;
+      }
+    }
+
+    function onPointerUp(e) {
+      document.removeEventListener('pointermove', onPointerMove);
+      document.removeEventListener('pointerup', onPointerUp);
+      botAvatar.style.cursor = 'pointer';
+
+      // If we didn't drag, it's a click!
+      if (!isDragging) {
+        playClickSound();
+        msgIndex = (msgIndex + 1) % botMessages.length;
+        botMessage.textContent = botMessages[msgIndex];
+        botWidget.classList.add('active');
+        if (botWidget.hideTimeout) clearTimeout(botWidget.hideTimeout);
+        botWidget.hideTimeout = setTimeout(() => {
+          botWidget.classList.remove('active');
+        }, 4000);
+      }
+    }
   }
 });
