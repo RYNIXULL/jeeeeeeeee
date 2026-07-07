@@ -1,0 +1,881 @@
+/* ============================================================
+   RESET & BASE
+   ============================================================ */
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap');
+
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: #04050a;
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  color: #fff;
+  user-select: none;
+}
+
+/* ============================================================
+   STARFIELD BACKGROUND
+   ============================================================ */
+#starfield {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.star {
+  position: absolute;
+  border-radius: 50%;
+  background: #fff;
+  pointer-events: none;
+}
+
+.star.twinkle-slow { animation: twinkleSlow var(--dur, 4s) ease-in-out infinite alternate var(--delay, 0s); }
+.star.twinkle-fast { animation: twinkleFast var(--dur, 2s) ease-in-out infinite alternate var(--delay, 0s); }
+.star.drift        { animation: twinkleSlow var(--dur, 6s) ease-in-out infinite alternate var(--delay, 0s), drift var(--drift-dur, 30s) linear infinite var(--delay, 0s); }
+.star.blink        { animation: blink var(--dur, 8s) ease-in-out infinite var(--delay, 0s); }
+
+@keyframes twinkleSlow {
+  from { opacity: var(--op-from, 0.2); transform: scale(1); }
+  to   { opacity: var(--op-to, 0.9);   transform: scale(1.3); }
+}
+
+@keyframes twinkleFast {
+  from { opacity: var(--op-from, 0.4); }
+  to   { opacity: var(--op-to, 1); }
+}
+
+@keyframes drift {
+  0%   { transform: translate(0, 0); }
+  25%  { transform: translate(var(--dx1, 4px), var(--dy1, -3px)); }
+  50%  { transform: translate(var(--dx2, -2px), var(--dy2, 5px)); }
+  75%  { transform: translate(var(--dx3, 5px), var(--dy3, 2px)); }
+  100% { transform: translate(0, 0); }
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 0; transform: scale(0.5); }
+  10%, 90%  { opacity: 0; }
+  50%       { opacity: var(--op-to, 0.8); transform: scale(1.2); }
+}
+
+/* ============================================================
+   SLIDE SYSTEM
+   ============================================================ */
+#slider-viewport {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  overflow: hidden;
+}
+
+#slides-container {
+  display: flex;
+  width: 300%;
+  height: 100%;
+  will-change: transform;
+  transition: transform 1100ms cubic-bezier(0.76, 0, 0.24, 1);
+}
+
+#slides-container.animating {
+  pointer-events: none;
+}
+
+.slide {
+  flex: 0 0 33.3333%;
+  width: 33.3333%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+/* ============================================================
+   TOAST NOTIFICATION
+   ============================================================ */
+#toast-container {
+  position: fixed;
+  bottom: 32px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  pointer-events: none;
+}
+
+.toast {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 24px;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 0.95rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  
+  /* Liquid Refraction */
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(16px) saturate(200%);
+  -webkit-backdrop-filter: blur(16px) saturate(200%);
+  border: none;
+  
+  /* Liquid Surface Tension Specular & Refraction Shadows */
+  box-shadow: 
+    inset 4px 4px 8px rgba(255, 255, 255, 0.4), /* Top-left highlight */
+    inset -4px -4px 12px rgba(0, 0, 0, 0.3),    /* Bottom-right shadow */
+    0 10px 30px rgba(0, 0, 0, 0.5),             /* Drop shadow */
+    inset 0 0 0 1px rgba(255,255,255,0.2);      /* Surface tension line */
+    
+  opacity: 0;
+  transform: translateY(20px) scale(0.95);
+  transition: opacity 400ms ease, transform 400ms cubic-bezier(0.34,1.56,0.64,1);
+  pointer-events: none;
+  white-space: nowrap;
+  
+  /* Liquid morphing shape */
+  border-radius: 40px 50px 30px 40px / 50px 30px 40px 50px;
+  animation: liquidFloat 4s ease-in-out infinite alternate;
+}
+
+@keyframes liquidFloat {
+  0% { border-radius: 40px 50px 30px 40px / 50px 30px 40px 50px; }
+  100% { border-radius: 50px 30px 50px 30px / 40px 50px 30px 40px; }
+}
+
+.toast.show {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  pointer-events: auto;
+}
+
+.toast.toast-info {
+  background: linear-gradient(135deg, rgba(30, 60, 120, 0.4) 0%, rgba(10, 20, 50, 0.2) 100%);
+  color: rgba(210, 230, 255, 0.95);
+  border-top-color: rgba(100, 150, 255, 0.3);
+}
+
+.toast.toast-success {
+  background: linear-gradient(135deg, rgba(30, 90, 50, 0.4) 0%, rgba(10, 40, 20, 0.2) 100%);
+  color: rgba(180, 255, 200, 0.95);
+  border-top-color: rgba(100, 255, 150, 0.25);
+}
+
+.toast.toast-error {
+  background: linear-gradient(135deg, rgba(120, 30, 30, 0.4) 0%, rgba(50, 10, 10, 0.2) 100%);
+  color: rgba(255, 180, 180, 0.95);
+  border-top-color: rgba(255, 100, 100, 0.3);
+}
+
+.toast-icon {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+}
+
+/* ============================================================
+   LIQUID GLASS MIXIN (reusable class)
+   ============================================================ */
+.glass-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 18px 42px;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.15rem;
+  font-weight: 400;
+  letter-spacing: 0.18em;
+  color: rgba(255, 255, 255, 0.95);
+  
+  /* Liquid Base */
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(18px) saturate(200%);
+  -webkit-backdrop-filter: blur(18px) saturate(200%);
+  border: none;
+  
+  /* Morphing organic shape */
+  border-radius: 50px 40px 60px 45px / 45px 50px 40px 60px;
+  animation: liquidMorphBtn 5s ease-in-out infinite alternate;
+  
+  cursor: pointer;
+  outline: none;
+  overflow: hidden;
+  transition: transform 400ms cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 400ms ease;
+  
+  /* Deep Refraction & Surface Tension */
+  box-shadow:
+    inset 6px 6px 14px rgba(255, 255, 255, 0.45), /* Specular reflection top-left */
+    inset -6px -6px 16px rgba(0, 0, 0, 0.4),      /* Deep refraction bottom-right */
+    0 12px 30px rgba(0, 0, 0, 0.5),               /* Shadow cast by droplet */
+    inset 0 0 0 1px rgba(255, 255, 255, 0.3);     /* Crisp water surface line */
+}
+
+@keyframes liquidMorphBtn {
+  0% { border-radius: 50px 40px 60px 45px / 45px 50px 40px 60px; }
+  100% { border-radius: 40px 60px 45px 50px / 60px 40px 50px 45px; }
+}
+
+/* Intense Specular Glare (Light Ping) */
+.glass-btn::before {
+  content: '';
+  position: absolute;
+  top: 15%;
+  left: 15%;
+  width: 30%;
+  height: 25%;
+  background: radial-gradient(ellipse at center, rgba(255,255,255,0.7) 0%, rgba(255,255,255,0) 60%);
+  border-radius: 50%;
+  pointer-events: none;
+  filter: blur(2px);
+  transform: rotate(-25deg);
+}
+
+.glass-btn:hover {
+  transform: scale(1.05) translateY(-2px);
+  box-shadow:
+    inset 8px 8px 16px rgba(255, 255, 255, 0.6),
+    inset -8px -8px 20px rgba(0, 0, 0, 0.5),
+    0 16px 40px rgba(0, 0, 0, 0.6),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.4);
+}
+
+.glass-btn:active {
+  transform: scale(0.98);
+}
+
+/* Ripple effect */
+.glass-btn .ripple {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.25);
+  transform: scale(0);
+  animation: rippleAnim 650ms ease-out forwards;
+  pointer-events: none;
+}
+
+@keyframes rippleAnim {
+  to { transform: scale(4); opacity: 0; }
+}
+
+/* ============================================================
+   SLIDE 1 — GREETING
+   ============================================================ */
+#slide-1 {
+  flex-direction: column;
+}
+
+#btn-hello {
+  z-index: 10;
+}
+
+/* ============================================================
+   SLIDE 2 — VIDEO
+   ============================================================ */
+#slide-2 {
+  flex-direction: column;
+  gap: 0;
+}
+
+.video-wrapper {
+  position: absolute;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  background: #000;
+  transition: opacity 800ms ease, transform 800ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  z-index: 1;
+}
+
+.video-wrapper video {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  background: #000;
+}
+
+/* Navigation buttons */
+#btn-next, .btn-back {
+  position: absolute;
+  bottom: 36px;
+  width: 56px;
+  height: 56px;
+  padding: 0;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 20;
+  box-shadow:
+    0 4px 24px rgba(0,0,0,0.45),
+    0 0 16px rgba(255,255,255,0.06),
+    0 1px 0 rgba(255,255,255,0.15) inset;
+  font-size: 1.4rem;
+  letter-spacing: 0;
+  animation: floatBtn 3s ease-in-out infinite;
+}
+
+#btn-next {
+  right: 36px;
+}
+
+.btn-back {
+  left: 36px;
+}
+
+#btn-next::before, .btn-back::before { width: 60%; }
+
+@keyframes floatBtn {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-6px); }
+}
+
+#btn-next:hover, .btn-back:hover {
+  animation: none;
+  transform: scale(1.15) translateY(-4px);
+}
+
+.btn-arrow {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  pointer-events: none;
+  flex-shrink: 0;
+}
+
+/* ============================================================
+   SLIDE 3 — ENVELOPE & LETTER
+   ============================================================ */
+#slide-3 {
+  perspective: 1200px;
+  overflow: visible;
+}
+
+/* ─────────────────────────────────────────────
+   ENVELOPE SCENE
+───────────────────────────────────────────── */
+.envelope-scene {
+  position: relative;
+  width: clamp(280px, 55vw, 460px);
+  aspect-ratio: 1.6;
+  margin: 0 auto;
+  cursor: pointer;
+  z-index: 1;
+  isolation: isolate; /* Memaksa webkit untuk merender clip-path dengan benar meskipun ada 3d transform */
+  /* Clip bagian bawah agar surat tidak bocor ke bawah amplop */
+  clip-path: polygon(-50% -200%, 150% -200%, 150% 100%, -50% 100%);
+  transition: transform 400ms cubic-bezier(0.34,1.56,0.64,1);
+}
+
+.envelope-scene:hover:not(.is-open) {
+  transform: scale(1.02) translateY(-4px);
+}
+
+.envelope-scene:active:not(.is-open) {
+  transform: scale(0.98);
+  transition-duration: 120ms;
+}
+
+/* ─────────────────────────────────────────────
+   ENVELOPE BACK & FRONT
+────────────────/* Envelope Base & Parts */
+.env-back {
+  position: absolute;
+  inset: 0;
+  border-radius: 4px;
+  background: linear-gradient(135deg, #dfcbae 0%, #c3ab87 100%);
+  box-shadow: inset 0 0 40px rgba(0,0,0,0.15); /* Deep shadow inside */
+}
+
+.env-front {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+  /* Base shape to prevent gaps showing the letter */
+  clip-path: polygon(0 0, 50% 50%, 100% 0, 100% 100%, 0 100%);
+  background: #9c8461; /* Dark shadow base where flaps meet */
+}
+
+.env-front-left,
+.env-front-right,
+.env-front-bottom {
+  position: absolute;
+  inset: 0;
+}
+
+.env-front-left {
+  background: linear-gradient(to right, #ebd7ba 0%, #d6bfa0 100%);
+  clip-path: polygon(0 0, 50% 50%, 0 100%);
+  filter: drop-shadow(3px 0 6px rgba(0,0,0,0.15));
+}
+
+.env-front-right {
+  background: linear-gradient(to left, #ebd7ba 0%, #cbb18d 100%);
+  clip-path: polygon(100% 0, 50% 50%, 100% 100%);
+  filter: drop-shadow(-3px 0 6px rgba(0,0,0,0.15));
+}
+
+.env-front-bottom {
+  background: linear-gradient(to top, #cbb18d 0%, #e8d3b5 100%);
+  clip-path: polygon(0 100%, 50% 50%, 100% 100%);
+  filter: drop-shadow(0 -4px 8px rgba(0,0,0,0.2));
+}
+
+.env-flap {
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 60%;
+  z-index: 10;
+  transform-origin: top center;
+  transform-style: preserve-3d;
+  transition: 
+    transform 920ms cubic-bezier(0.645, 0.045, 0.355, 1.000),
+    z-index 0s 0s;
+  pointer-events: none;
+}
+
+.env-flap-clip {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  clip-path: polygon(0 0, 100% 0, 50% 100%);
+  background: linear-gradient(160deg, #ebd7ba 0%, #cca97e 60%, #a88d65 100%);
+  border-radius: 4px 4px 0 0;
+}
+
+.env-flap-clip::after {
+  content: '';
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 50%;
+  background: linear-gradient(to bottom, rgba(255,255,255,0.25), transparent);
+}
+
+/* Wax seal */
+.env-seal {
+  position: absolute;
+  top: 55%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 80px;
+  height: 80px;
+  z-index: 11;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 500ms cubic-bezier(0.34,1.56,0.64,1), opacity 500ms ease;
+  pointer-events: none;
+}
+
+.wax-seal-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  overflow: visible;
+}
+
+.seal-inner {
+  position: absolute;
+  width: 44px;
+  height: 44px;
+  background: #7a0c0c;
+  border-radius: 50%;
+  box-shadow: 
+    inset 4px 4px 6px rgba(0,0,0,0.8), 
+    inset -2px -2px 3px rgba(255,255,255,0.15),
+    0 2px 4px rgba(255,255,255,0.3);
+  z-index: 1;
+}
+
+.seal-letter {
+  position: relative;
+  z-index: 2;
+  font-family: 'Playfair Display', serif;
+  font-style: italic;
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: #2b0202;
+  text-shadow: 
+    1px 1px 1px rgba(255,255,255,0.2), 
+    -1px -1px 2px rgba(0,0,0,0.9);      
+  line-height: 1;
+  margin-top: -6px;
+  margin-left: -2px;
+}
+
+/* Seal menghilang saat terbuka */
+.envelope-scene.is-open .env-seal {
+  transform: translate(-50%, -50%) scale(0);
+  opacity: 0;
+}
+
+/* Flap flip open */
+.envelope-scene.is-open .env-flap {
+  transform: rotateX(-180deg);
+  z-index: 1; /* Saat terbuka flap berada di belakang surat */
+  transition: 
+    transform 920ms cubic-bezier(0.645, 0.045, 0.355, 1.000),
+    z-index 0s 350ms; /* Tunggu sampai flap berputar sedikit sebelum pindah ke belakang */
+}
+
+/* ─────────────────────────────────────────────
+   LETTER WRAPPER
+───────────────────────────────────────────── */
+.letter-wrapper {
+  position: absolute;
+  top: 15%; /* Dimulai lebih bawah agar tertutup sempurna oleh bentuk V flap */
+  left: 4%;
+  width: 92%;
+  height: 60vh;       /* Tinggi surat diperbesar agar lega */
+  max-height: 550px;
+  z-index: 2;         /* Di antara env-back (1) dan env-front (3) */
+  /* Posisi awal: top:15% membuat atas surat tertutup env-front dan flap.
+     Bawah surat melewati amplop tapi dipotong oleh clip-path envelope-scene. */
+  transform: translateY(0);
+  transition: transform 1000ms 150ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  pointer-events: none;
+}
+
+/* Saat terbuka: surat naik ke atas */
+.envelope-scene.is-open .letter-wrapper {
+  /* Naik penuh (-100%), tapi diturunkan 140px agar bawahnya tetap terselip di dalam amplop */
+  transform: translateY(calc(-100% + 140px + 15%));
+  pointer-events: auto;
+}
+
+/* ─────────────────────────────────────────────
+   LETTER CARD
+───────────────────────────────────────────── */
+.letter-card {
+  width: 100%;
+  height: 100%;       /* Memenuhi letter-wrapper */
+  background: linear-gradient(165deg, #fdf8f0 0%, #f9f4e8 50%, #f4eedd 100%);
+  border-radius: 10px 10px 8px 8px;
+  box-shadow:
+    0 -6px 24px rgba(0,0,0,0.45),
+    0 12px 40px rgba(0,0,0,0.35);
+  padding: 26px 24px 220px;
+  overflow-y: auto;   /* Scroll selalu aktif, bisa digulir ketika terbuka */
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(180,150,100,0.35) transparent;
+}
+
+.letter-card::-webkit-scrollbar { width: 3px; }
+.letter-card::-webkit-scrollbar-track { background: transparent; }
+.letter-card::-webkit-scrollbar-thumb { background: rgba(180,150,100,0.4); border-radius: 4px; }
+
+/* Garis kertas dekoratif */
+.letter-lines {
+  position: absolute;
+  inset: 26px 24px 28px;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.letter-lines::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    to bottom,
+    transparent,
+    transparent 27px,
+    rgba(180,160,100,0.16) 27px,
+    rgba(180,160,100,0.16) 28px
+  );
+}
+
+/* ─────────────────────────────────────────────
+   LETTER CONTENT — muncul dengan fade setelah surat naik
+───────────────────────────────────────────── */
+.letter-content {
+  position: relative;
+  z-index: 1;
+  opacity: 0;
+  transform: translateY(6px);
+  transition: opacity 600ms 500ms ease, transform 600ms 500ms ease;
+  color: #3a2e20;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(0.85rem, 2.2vw, 1rem);
+  line-height: 1.85;
+}
+
+.envelope-scene.is-open .letter-content {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.letter-content .letter-header {
+  text-align: center;
+  margin-bottom: 14px;
+}
+
+.letter-content .letter-title {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(1rem, 3vw, 1.35rem);
+  font-style: italic;
+  color: #6b4c2a;
+  margin-bottom: 3px;
+}
+
+.letter-content .letter-date {
+  font-size: 0.8rem;
+  color: #8a7050;
+  letter-spacing: 0.08em;
+}
+
+.letter-content .love-note {
+  font-family: 'Playfair Display', serif;
+  font-style: italic;
+  font-size: 1.05em;
+  color: #6b4c2a;
+  text-align: center;
+  margin: 24px 0;
+  padding: 0 16px;
+  line-height: 1.6;
+}
+
+.letter-content .letter-divider {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 12px 0;
+  color: rgba(180,150,100,0.6);
+}
+
+.letter-content .letter-divider::before,
+.letter-content .letter-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: rgba(180,150,100,0.28);
+}
+
+.letter-content .letter-divider svg {
+  width: 13px;
+  height: 13px;
+  fill: rgba(180,130,80,0.55);
+  flex-shrink: 0;
+}
+
+.letter-content p {
+  margin-bottom: 12px;
+  text-align: justify;
+}
+
+.letter-content .letter-closing {
+  text-align: right;
+  font-style: italic;
+  color: #6b4c2a;
+  margin-top: 18px;
+  font-size: 0.94em;
+}
+
+.letter-content .letter-sig {
+  text-align: right;
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(1.1rem, 3vw, 1.5rem);
+  font-style: italic;
+  color: #4a3018;
+  margin-top: 4px;
+}
+
+/* Hint teks di bawah amplop */
+.env-hint {
+  position: absolute;
+  bottom: -34px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.76rem;
+  letter-spacing: 0.12em;
+  color: rgba(255,255,255,0.28);
+  white-space: nowrap;
+  transition: opacity 500ms ease;
+  pointer-events: none;
+}
+
+.envelope-scene.is-open .env-hint {
+  opacity: 0;
+}
+
+/* ============================================================
+   SLIDE ENTRANCE ANIMATIONS
+   ============================================================ */
+/* Elements animate in when slide becomes active */
+.slide-content-enter {
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity 800ms ease, transform 800ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.slide-content-enter.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ============================================================
+   PROGRESS DOTS
+   ============================================================ */
+.progress-dots {
+  position: absolute;
+  top: -30px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 10px;
+  z-index: 5;
+}
+
+.dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  width: 12px;
+  height: 12px;
+  border-radius: 40% 60% 50% 50% / 50% 40% 60% 50%;
+  background: rgba(255,255,255,0.05);
+  border: none;
+  backdrop-filter: blur(8px) saturate(200%);
+  -webkit-backdrop-filter: blur(8px) saturate(200%);
+  box-shadow: 
+    inset 2px 2px 4px rgba(255, 255, 255, 0.4), 
+    inset -2px -2px 6px rgba(0, 0, 0, 0.4),
+    0 4px 10px rgba(0, 0, 0, 0.3),
+    inset 0 0 0 1px rgba(255,255,255,0.2);
+  transition: all 400ms cubic-bezier(0.34, 1.56, 0.64, 1);
+  animation: liquidFloat 3s ease-in-out infinite alternate;
+}
+
+.dot.active {
+  background: rgba(255,255,255,0.2);
+  box-shadow: 
+    inset 2px 2px 6px rgba(255, 255, 255, 0.9), 
+    inset -2px -2px 6px rgba(0, 0, 0, 0.2),
+    0 4px 14px rgba(255, 255, 255, 0.5),
+    inset 0 0 0 1px rgba(255,255,255,0.6);
+  transform: scale(1.4);
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 600px) {
+  .glass-btn {
+    padding: 16px 32px;
+    font-size: 1rem;
+    letter-spacing: 0.14em;
+  }
+
+  .glass-btn.btn-back {
+    padding: 0;
+  }
+
+  #btn-next, .btn-back {
+    width: 48px;
+    height: 48px;
+    bottom: 24px;
+  }
+  
+  #btn-next {
+    right: 20px;
+  }
+
+  .btn-back {
+    left: 20px;
+  }
+
+  .envelope-scene {
+    width: clamp(260px, 88vw, 340px);
+  }
+
+  .letter-wrapper {
+    width: 96%;
+    left: 2%;
+    height: 70vh;
+  }
+
+  .letter-content {
+    font-size: 0.95rem;
+    line-height: 1.7;
+  }
+
+  .letter-card {
+    padding: 18px 16px 200px;
+  }
+
+  .env-seal {
+    width: 60px;
+    height: 60px;
+  }
+
+  .seal-inner {
+    width: 33px;
+    height: 33px;
+  }
+
+  .seal-letter {
+    font-size: 1.7rem;
+    margin-top: -4px;
+  }
+
+  .env-hint {
+    font-size: 0.7rem;
+    bottom: -28px;
+  }
+}
+
+@media (max-width: 380px) {
+  .glass-btn {
+    padding: 14px 28px;
+    font-size: 0.95rem;
+  }
+  
+  .glass-btn.btn-back {
+    padding: 0;
+  }
+}
+
+@media (orientation: landscape) and (max-height: 500px) {
+  .envelope-scene {
+    width: clamp(200px, 45vw, 340px);
+  }
+
+  #btn-next, .btn-back {
+    bottom: 16px;
+  }
+
+  #btn-next {
+    right: 16px;
+  }
+
+  .btn-back {
+    left: 16px;
+  }
+}
+
+/* ============================================================
+   SCROLL LOCK
+   ============================================================ */
+body.no-scroll {
+  overflow: hidden;
+  touch-action: none;
+}

@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="description" content="A cinematic, romantic night sky experience">
+  <title>jee</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════
+     STARFIELD (full-page fixed background)
+════════════════════════════════════════════ -->
+<div id="starfield" aria-hidden="true"></div>
+
+<!-- ═══════════════════════════════════════════
+     PROGRESS DOTS
+════════════════════════════════════════════ -->
+<nav id="progress-dots" aria-label="Slide navigation">
+  <div class="dot active" aria-label="Slide 1"></div>
+  <div class="dot" aria-label="Slide 2"></div>
+  <div class="dot" aria-label="Slide 3"></div>
+</nav>
+
+<!-- ═══════════════════════════════════════════
+     TOAST CONTAINER
+════════════════════════════════════════════ -->
+<div id="toast-container" role="status" aria-live="polite" aria-atomic="true"></div>
+
+<!-- ═══════════════════════════════════════════
+     SLIDER VIEWPORT
+════════════════════════════════════════════ -->
+<main id="slider-viewport">
+  <div id="slides-container">
+
+    <!-- ─────────────────────────────────────
+         SLIDE 1 — GREETING
+    ──────────────────────────────────────── -->
+    <section class="slide" id="slide-1" aria-label="Slide pembuka">
+
+      <button
+        id="btn-hello"
+        class="glass-btn"
+        type="button"
+        aria-label="Masuk ke halaman berikutnya"
+      >
+        <!-- Icon: moon / crescent -->
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="opacity:0.75">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+        </svg>
+        hallo, jee
+      </button>
+
+    </section>
+
+    <!-- ─────────────────────────────────────
+         SLIDE 2 — VIDEO
+    ──────────────────────────────────────── -->
+    <section class="slide" id="slide-2" aria-label="Slide video">
+
+      <div class="video-wrapper">
+        <video
+          id="main-video"
+          playsinline
+          preload="auto"
+          aria-label="Video spesial untuk jee"
+        >
+          <source src="do you think i forgot you.mp4" type="video/mp4">
+          Peramban Anda tidak mendukung video HTML5.
+        </video>
+      </div>
+
+      <!-- Navigation button: back to slide 1 -->
+      <button
+        id="btn-prev-1"
+        class="glass-btn btn-back"
+        type="button"
+        aria-label="Kembali"
+        title="Kembali"
+      >
+        <svg class="btn-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <line x1="19" y1="12" x2="5" y2="12"/>
+          <polyline points="12 19 5 12 12 5"/>
+        </svg>
+      </button>
+
+      <!-- Navigation button: slide 2 → 3 -->
+      <button
+        id="btn-next"
+        class="glass-btn"
+        type="button"
+        aria-label="Lanjut ke slide berikutnya"
+        title="Lanjut"
+      >
+        <!-- Arrow right icon -->
+        <svg class="btn-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <line x1="5" y1="12" x2="19" y2="12"/>
+          <polyline points="12 5 19 12 12 19"/>
+        </svg>
+      </button>
+
+    </section>
+
+    <!-- ─────────────────────────────────────
+         SLIDE 3 — ENVELOPE LETTER
+    ──────────────────────────────────────── -->
+    <section class="slide" id="slide-3" aria-label="Slide surat romantis">
+
+      <!-- Envelope scene -->
+      <div
+        class="envelope-scene"
+        id="envelope-scene"
+        role="button"
+        tabindex="0"
+        aria-label="Klik untuk membuka amplop"
+      >
+        <!-- Back of envelope -->
+        <div class="env-back" aria-hidden="true"></div>
+
+        <!-- LETTER — sits behind env-front, slides up on open -->
+        <div class="letter-wrapper">
+          <div class="letter-card">
+            <div class="letter-lines" aria-hidden="true"></div>
+
+            <!-- ╔══════════════════════════════╗
+                 ║  ISI SURAT — EDIT DI SINI   ║
+                 ╚══════════════════════════════╝ -->
+            <div class="letter-content">
+
+              <div class="letter-header">
+                <div class="letter-title">untuk jee</div>
+                <div class="letter-date">08 agustus 2026</div>
+              </div>
+
+              <div class="letter-divider" aria-hidden="true">
+                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M12 21.593c-5.63-5.539-11-10.297-11-14.402 0-3.791 3.068-5.191 5.281-5.191 1.312 0 4.151.501 5.719 4.457 1.59-3.968 4.464-4.447 5.726-4.447 2.54 0 5.274 1.621 5.274 5.181 0 4.069-5.136 8.625-11 14.402z"/>
+                </svg>
+              </div>
+
+              <p>
+                Beribu doa Kakak patri dalam sunyi yang paling dalam,<br>
+                Beribu harap Kakak titipkan pada semesta khusus untuk Jee.
+              </p>
+
+              <p>
+                Hari ini, Jee, waktu tidak sekadar bergerak pada putaran angka. Ia sedang menenun takdir dalam perjalanan Jee yang kian membentang luas. Jee sedang berdiri di ambang pintu, di antara sisa sisa binar masa remaja yang perlahan memudar, dan dekap kedewasaan yang menyambut dengan segala rahasianya. Jee mungkin belum sepenuhnya menanggalkan masa lalu, namun Kakak melihat keberanian yang tumbuh saat Jee menatap cakrawala yang belum terjamah di depan sana.
+              </p>
+
+              <p>
+                Lalu, di manakah posisi Kakak?<br>
+                Kakak telah mengikat janji pada sunyi dan waktu, untuk senantiasa merayakan kehadiran Jee, melampaui badai atau teduhnya musim yang sedang berkecamuk. Maka, izinkan Kakak mengambil tempat di sudut kecil hari istimewa ini, mempersembahkan perayaan yang mungkin tampak sederhana di mata dunia, namun di dalamnya bergetar doa doa yang paling tulus dari relung hati Kakak.
+              </p>
+
+              <p>
+                Selamat hari lahir, Jee.<br>
+                Selamat menjemput kedewasaan yang kini memanggil namamu.<br>
+                Selamat berkelana, menaklukkan jarak yang membentang di depan mata dengan keteguhan hati.
+              </p>
+
+              <p>
+                Semoga umur Jee diberkati dengan kebermaknaan yang tak pernah putus. Semoga setiap jejak yang Jee tempuh selalu dibukakan kemudahan, setiap duri tajam disingkirkan oleh tangan tak terlihat, dan setiap cobaan yang datang perlahan berubah menjadi tangga menuju kedewasaan. Semoga semesta selalu merestui setiap langkah Jee, dan kebaikan senantiasa menaungi Jee layaknya embun yang setia menyapa pagi.
+              </p>
+
+              <p>
+                Masih ada ribuan doa lainnya yang tak sanggup terucap oleh keterbatasan kata, yang hanya mampu Kakak selipkan dalam setiap sujud panjang Kakak.
+              </p>
+
+              <p>
+                Tetaplah berpijar, Jee. Jika nanti keraguan mulai membelenggu batin, atau dunia terasa begitu asing dan dingin saat Jee sedang berjuang, ingatlah bahwa Kakak selalu menjadi tempat untuk Jee pulang. Karena janji Kakak bukanlah sekadar deretan kata, melainkan ketetapan hati untuk selalu menjaga dan membersamai Jee, dalam kondisi apa pun, saat kapan pun waktu menguji ketahanan kita.
+              </p>
+
+              <p class="love-note">
+                I love you so much, I love you every time, I love you more, more than words could ever translate, to the moon and back.
+              </p>
+
+              <div class="letter-closing">dengan sepenuh hati,</div>
+              <div class="letter-sig">kakak</div>
+
+            </div>
+            <!-- ╚══════════════════════════════╝ -->
+
+          </div><!-- .letter-card -->
+        </div><!-- .letter-wrapper -->
+
+        <!-- FLAP — moved outside env-front to control z-index properly -->
+        <div class="env-flap">
+          <div class="env-flap-clip"></div>
+        </div>
+
+        <!-- ENVELOPE FRONT — layered on top of letter -->
+        <div class="env-front" aria-hidden="true">
+          <div class="env-front-left"></div>
+          <div class="env-front-right"></div>
+          <div class="env-front-bottom"></div>
+        </div><!-- .env-front -->
+
+        <!-- Wax seal -->
+        <div class="env-seal" aria-hidden="true">
+          <svg class="wax-seal-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <filter id="realistic-wax" x="-20%" y="-20%" width="140%" height="140%">
+                <feTurbulence type="fractalNoise" baseFrequency="0.06" numOctaves="3" result="noise" />
+                <feDisplacementMap in="SourceGraphic" in2="noise" scale="4" xChannelSelector="R" yChannelSelector="G" result="displaced" />
+                <feGaussianBlur in="displaced" stdDeviation="2" result="blur" />
+                <feSpecularLighting in="blur" surfaceScale="6" specularConstant="1.2" specularExponent="30" lighting-color="#ffd5d5" result="spec">
+                  <fePointLight x="10" y="10" z="40" />
+                </feSpecularLighting>
+                <feComposite in="spec" in2="displaced" operator="in" result="specMasked" />
+                <feComposite in="displaced" in2="specMasked" operator="arithmetic" k1="0" k2="1" k3="1" k4="0" result="lit" />
+                <feDropShadow in="lit" dx="0" dy="4" stdDeviation="4" flood-color="#000" flood-opacity="0.6" />
+              </filter>
+              <radialGradient id="wax-grad" cx="35%" cy="35%" r="65%">
+                <stop offset="0%" stop-color="#e34040"/>
+                <stop offset="45%" stop-color="#a81313"/>
+                <stop offset="100%" stop-color="#6a0505"/>
+              </radialGradient>
+            </defs>
+            <circle cx="50" cy="50" r="36" fill="url(#wax-grad)" filter="url(#realistic-wax)" />
+          </svg>
+          <div class="seal-inner"></div>
+          <span class="seal-letter">r</span>
+        </div>
+
+        <!-- Hint text -->
+        <div class="env-hint" aria-hidden="true">ketuk untuk membuka</div>
+
+      </div><!-- .envelope-scene -->
+
+      <!-- Navigation button: back to slide 2 -->
+      <button
+        id="btn-prev-2"
+        class="glass-btn btn-back"
+        type="button"
+        aria-label="Kembali"
+        title="Kembali"
+      >
+        <svg class="btn-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <line x1="19" y1="12" x2="5" y2="12"/>
+          <polyline points="12 19 5 12 12 5"/>
+        </svg>
+      </button>
+
+      <!-- Hidden audio elements -->
+      <audio id="open-sound" src="open.mp3" preload="auto" aria-hidden="true"></audio>
+      <audio id="bgm-slide3" src="sempurna.mp3" loop preload="auto" aria-hidden="true"></audio>
+
+    </section>
+
+  </div><!-- #slides-container -->
+</main>
+
+<script src="script.js"></script>
+</body>
+</html>
