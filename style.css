@@ -278,41 +278,6 @@ html, body {
   flex-direction: column;
 }
 
-.mascot-wrapper {
-  margin-bottom: 40px;
-  width: 150px;
-  height: 150px;
-  border-radius: 50%;
-  position: relative;
-  overflow: hidden;
-  animation: floatMascot 4s ease-in-out infinite;
-  z-index: 5;
-  
-  /* Liquid glass orb effect */
-  box-shadow: 
-    0 12px 35px rgba(0,0,0,0.6),
-    inset 0 0 0 2px rgba(255,255,255,0.2),
-    inset 4px 4px 15px rgba(255,255,255,0.4),
-    inset -4px -4px 15px rgba(0,0,0,0.5);
-}
-
-.mascot-img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transform: scale(1.1); /* Zoom slightly */
-  transition: transform 0.4s ease;
-}
-
-.mascot-wrapper:hover .mascot-img {
-  transform: scale(1.2) rotate(2deg);
-}
-
-@keyframes floatMascot {
-  0%, 100% { transform: translateY(0) rotate(-2deg); }
-  50% { transform: translateY(-12px) rotate(2deg); }
-}
-
 #btn-hello {
   z-index: 10;
 }
@@ -886,6 +851,93 @@ html, body {
   
   .glass-btn.btn-back {
     padding: 0;
+  }
+}
+
+/* ============================================================
+   WEB BOT WIDGET
+   ============================================================ */
+.bot-widget-container {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 12px;
+  pointer-events: none; /* Let clicks pass through empty space */
+}
+
+.bot-chat-bubble {
+  pointer-events: auto;
+  opacity: 0;
+  transform: translateY(10px) scale(0.9);
+  transform-origin: bottom right;
+  transition: opacity 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), 
+              transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  font-size: 0.9rem;
+  padding: 12px 20px;
+  max-width: 200px;
+  text-align: right;
+  /* Use liquid glass design inherited from .glass-btn */
+  border-radius: 20px 20px 4px 20px; /* Chat bubble tail effect */
+}
+
+.bot-widget-container.active .bot-chat-bubble,
+.bot-widget-container:hover .bot-chat-bubble {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+.bot-avatar-wrapper {
+  pointer-events: auto;
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  animation: floatMascot 4s ease-in-out infinite;
+  
+  /* Liquid glass orb effect */
+  box-shadow: 
+    0 10px 25px rgba(0,0,0,0.5),
+    inset 0 0 0 1px rgba(255,255,255,0.2),
+    inset 2px 2px 8px rgba(255,255,255,0.4),
+    inset -2px -2px 8px rgba(0,0,0,0.5);
+  transition: transform 0.3s ease;
+}
+
+.bot-avatar-wrapper:hover {
+  transform: scale(1.05);
+}
+
+.bot-avatar-wrapper:active {
+  transform: scale(0.95);
+}
+
+.bot-avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: scale(1.1); /* Zoom slightly */
+  transition: transform 0.4s ease;
+}
+
+@keyframes floatMascot {
+  0%, 100% { transform: translateY(0) rotate(-2deg); }
+  50% { transform: translateY(-8px) rotate(2deg); }
+}
+
+@media (max-width: 768px) {
+  .bot-widget-container {
+    bottom: 1.5rem;
+    right: 1.5rem;
+  }
+  .bot-avatar-wrapper {
+    width: 60px;
+    height: 60px;
   }
 }
 

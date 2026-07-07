@@ -402,4 +402,52 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }, 400);
   });
+
+  // ─────────────────────────────────────────────
+  //  WEB BOT WIDGET LOGIC
+  // ─────────────────────────────────────────────
+  const botWidget = document.getElementById('web-bot-widget');
+  const botAvatar = document.getElementById('bot-avatar');
+  const botMessage = document.getElementById('bot-message');
+
+  const botMessages = [
+    "Hai, Jee! Klik aku! ✨",
+    "Hari ini hari spesial lho! 🎂",
+    "Semoga harimu menyenangkan! 💫",
+    "Pencet tombol next ya! 👉",
+    "Jangan lupa senyum hari ini! 😊",
+    "Suka sama desain webnya? 💖"
+  ];
+  let msgIndex = 0;
+
+  if (botWidget && botAvatar && botMessage) {
+    // Show chat bubble automatically for 4 seconds on load
+    setTimeout(() => {
+      botWidget.classList.add('active');
+      setTimeout(() => {
+        botWidget.classList.remove('active');
+      }, 4000);
+    }, 1500);
+
+    botAvatar.addEventListener('pointerdown', (e) => {
+      e.preventDefault(); // Prevent double triggering on mobile
+      
+      // Play UI click sound
+      playClickSound();
+
+      // Cycle message
+      msgIndex = (msgIndex + 1) % botMessages.length;
+      botMessage.textContent = botMessages[msgIndex];
+
+      // Show bubble and then hide it again after a few seconds
+      botWidget.classList.add('active');
+      
+      // Clear previous timeout if any
+      if (botWidget.hideTimeout) clearTimeout(botWidget.hideTimeout);
+      
+      botWidget.hideTimeout = setTimeout(() => {
+        botWidget.classList.remove('active');
+      }, 4000);
+    });
+  }
 });
