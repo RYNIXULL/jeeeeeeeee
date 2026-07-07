@@ -278,6 +278,41 @@ html, body {
   flex-direction: column;
 }
 
+.mascot-wrapper {
+  margin-bottom: 40px;
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  position: relative;
+  overflow: hidden;
+  animation: floatMascot 4s ease-in-out infinite;
+  z-index: 5;
+  
+  /* Liquid glass orb effect */
+  box-shadow: 
+    0 12px 35px rgba(0,0,0,0.6),
+    inset 0 0 0 2px rgba(255,255,255,0.2),
+    inset 4px 4px 15px rgba(255,255,255,0.4),
+    inset -4px -4px 15px rgba(0,0,0,0.5);
+}
+
+.mascot-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: scale(1.1); /* Zoom slightly */
+  transition: transform 0.4s ease;
+}
+
+.mascot-wrapper:hover .mascot-img {
+  transform: scale(1.2) rotate(2deg);
+}
+
+@keyframes floatMascot {
+  0%, 100% { transform: translateY(0) rotate(-2deg); }
+  50% { transform: translateY(-12px) rotate(2deg); }
+}
+
 #btn-hello {
   z-index: 10;
 }
